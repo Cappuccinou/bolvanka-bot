@@ -1,16 +1,21 @@
 import asyncio
-from aiogram import Bot
 import os
+from aiogram import Bot, Dispatcher
 
-TOKEN = os.environ["BOT_TOKEN"]  # или вставь строкой
+TOKEN = os.environ["BOT_TOKEN"]
+CHAT_ID = os.environ["CHAT_ID"]
+
 bot = Bot(token=TOKEN)
+dp = Dispatcher(bot)
+
+async def send_messages():
+    while True:
+        await bot.send_message(CHAT_ID, "/обнять")
+        await asyncio.sleep(120)
 
 async def main():
-    updates = await bot.get_updates()
-    for update in updates:
-        if update.message:
-            print("Chat title:", update.message.chat.title)
-            print("Chat ID:", update.message.chat.id)
-    await bot.session.close()
+    asyncio.create_task(send_messages())
+    await dp.start_polling()
 
-asyncio.run(main())
+if __name__ == '__main__':
+    asyncio.run(main())
